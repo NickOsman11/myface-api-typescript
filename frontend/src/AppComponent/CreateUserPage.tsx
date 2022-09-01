@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import ReactDOM from 'react-dom/client';
 import {CreateUserRequest} from "../../../src/models/api/createUserRequest";
+import './components.scss'
 
 export default function CreateUserPage() {
     const [formData, setForm] = useState<CreateUserRequest>({name: '',
@@ -15,28 +15,35 @@ export default function CreateUserPage() {
                                                                     profileImageUrl: ''})
 
   function validateForm(formData:CreateUserRequest){
-    //figure out what errors there are
+    
     const errors:CreateUserRequest = {name: '',
-    email: '', 
-    username: '',
-    coverImageUrl: '',
-    profileImageUrl: ''}
+                                      email: '', 
+                                      username: '',
+                                      coverImageUrl: '',
+                                      profileImageUrl: ''}
 
     const regex = /^[\w-.]+@([\w-]+.)+[\w-]{2,4}$/
 
     type ObjectKey = keyof typeof errors
-    // for (let field in formData){
-      // console.log(Object.entries()formData[field].toString());
-      Object.entries(formData).forEach(([key, value]) => {
-        const myVar = key as ObjectKey
-        if(value === ''){
-          errors[myVar] = `Required field`
+
+    Object.entries(formData).forEach(([key, value]) => {
+      const keyWithType = key as ObjectKey
+      if(value === ''){
+        errors[keyWithType] = `Required field`
+      }
+      if(key === 'email' && value != '' && !regex.test(formData.email)){
+        errors.email = 'Please enter a email address'
+      }
+      if(key ==='username'){
+        if (value.includes(" ")){
+          errors.username = 'Username cannot contain spaces'
         }
-        if(key === 'email' && value.toString().match(regex).length === 0){
-          errors.email = 'Please entre correct email address'
+        if (value.toLowerCase() != value){
+          errors.username = 'Username cannot contain upper case letters'
         }
-      })
-    // }      
+
+      }
+    })
     setFormErrors(errors)
     console.log(errors)
     
@@ -59,7 +66,7 @@ export default function CreateUserPage() {
   return (
     <form onSubmit={submitData}>
 
-        <input className={formErrors.name === undefined ? "":"invalid-form"}
+        <input className={formErrors.name === "" ? "":"invalid-form"}
           type="text" 
           value={formData.name}
           placeholder="Name"
