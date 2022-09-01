@@ -1,58 +1,75 @@
 import { useEffect, useState } from "react"
 import ReactDOM from 'react-dom/client';
+import {CreateUserRequest} from "../../../src/models/api/createUserRequest";
 
 export default function CreateUserPage() {
-    const [formData, setForm] = useState<{
-                                name: string; 
-                                email: string; 
-                                username: string;
-                                coverImageUrl: string;
-                                profileImageUrl: string;
+    const [formData, setForm] = useState<CreateUserRequest>({name: '',
+                                                            email: '', 
+                                                            username: '',
+                                                            coverImageUrl: '',
+                                                            profileImageUrl: ''})
+    const [formErrors, setFormErrors] = useState<CreateUserRequest>({name: '',
+                                                                    email: '', 
+                                                                    username: '',
+                                                                    coverImageUrl: '',
+                                                                    profileImageUrl: ''})
 
-                            }>({name: '',
-                                email: '', 
-                                username: '',
-                                coverImageUrl: '',
-                                profileImageUrl: ''})
+  function validateForm(){
+    //figure out what errors there are
+    setFormErrors()
+  }
+
+                                
+  function submitData(e:any){
+    
+    e.preventDefault()
+    fetch("http://localhost:3001/users/create/", {
+      method: 'POST',
+      body: JSON.stringify(formData),
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }  
+
+
   return (
-    <form>
-      <label>Enter your name:
-        <input
+    <form onSubmit={submitData} validate={validateForm}>
+
+        <input className={formErrors.name === undefined ? "":"invalid-form"}
           type="text" 
           value={formData.name}
-          onChange={(e) => {setForm({...formData, name: e.target.value}); e.preventDefault()}}
-
-          
+          placeholder="Name"
+          onChange={(e) => {setForm({...formData, name: e.target.value});
+                            console.log(e)}}
         />
-      </label>
-      {/* <label>Enter your email:
+        <{formErrors.name}>
+        
         <input
           type="text" 
           value={formData.email}
-          onChange={(e) => setForm(e.target.value)}
+          placeholder="Email"
+          onChange={(e) => {setForm({...formData, email: e.target.value})}}
         />
-      </label>
-      <label>Enter your username:
         <input
           type="text" 
           value={formData.username}
-          onChange={(e) => setForm(e.target.value)}
+          placeholder="Username"
+          onChange={(e) => {setForm({...formData, username: e.target.value})}}
         />
-      </label>
-      <label>Enter your coverImageUrl:
         <input
           type="text" 
           value={formData.coverImageUrl}
-          onChange={(e) => setForm(e.target.value)}
+          placeholder="Cover Image"
+          onChange={(e) => {setForm({...formData, coverImageUrl: e.target.value})}}
         />
-      </label>
-      <label>Enter your profileImageUrl:
         <input
           type="text" 
           value={formData.profileImageUrl}
-          onChange={(e) => setForm(e.target.value)}
+          placeholder="Profile Image"
+          onChange={(e) => {setForm({...formData, profileImageUrl: e.target.value})}}
         />
-      </label> */}
+        <input type="submit"/>
+
+
     </form>
   )
 }
