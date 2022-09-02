@@ -32,9 +32,10 @@ export default function PostsPage() {
 
         return(
             <div>
-                {postsData.results.map(post => {
+                {postsData.results.map((post, key) => {
                     return(
-                    <div className="post">
+                        
+                    <div className="post" key={key}>
                         <p>
                             {post.message}
                         </p>

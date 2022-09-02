@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import {CreateUserRequest} from "../../../src/models/api/createUserRequest";
-import './components.scss'
+
 
 export default function CreateUserPage() {
     const [formData, setForm] = useState<CreateUserRequest>({name: '',
@@ -28,6 +28,7 @@ export default function CreateUserPage() {
 
     Object.entries(formData).forEach(([key, value]) => {
       const keyWithType = key as ObjectKey
+
       if(value === ''){
         errors[keyWithType] = `Required field`
       }
@@ -60,6 +61,11 @@ export default function CreateUserPage() {
       body: JSON.stringify(formData),
       headers: { 'Content-Type': 'application/json' }
     })
+    setForm({name: '',
+    email: '', 
+    username: '',
+    coverImageUrl: '',
+    profileImageUrl: ''})
   }  
 
 
@@ -70,8 +76,7 @@ export default function CreateUserPage() {
           type="text" 
           value={formData.name}
           placeholder="Name"
-          onChange={(e) => {setForm({...formData, name: e.target.value});
-                            console.log(e)}}
+          onChange={(e) => {setForm({...formData, name: e.target.value})}}
         />
         <p>
           {formErrors.name}
